@@ -1,4 +1,5 @@
-﻿using Mango.Services.CouponAPI.Data;
+﻿using AutoMapper;
+using Mango.Services.CouponAPI.Data;
 using Mango.Services.CouponAPI.Models;
 using Mango.Services.CouponAPI.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +12,11 @@ namespace Mango.Services.CouponAPI.Controllers
     {
         private readonly AppDBContext _db;
         private ResponseDTO _response;
-        public CouponAPIController(AppDBContext db)
+        private IMapper _mapper;
+        public CouponAPIController(AppDBContext db, IMapper mapper)
         {
             _db = db;
+            _mapper = mapper;
             _response = new ResponseDTO();
         }
         [HttpGet]
@@ -22,7 +25,7 @@ namespace Mango.Services.CouponAPI.Controllers
             try
             {
                 IEnumerable<Coupon> objList = _db.Coupons.ToList();
-                _response.Result = objList;
+                _response.Result = _mapper.Map<IEnumerable<CouponDTO>>(objList);
                
             }
             catch (Exception ex)
@@ -40,14 +43,26 @@ namespace Mango.Services.CouponAPI.Controllers
             try
             {
                 Coupon obj = _db.Coupons.First(u => u.CouponID == id);
-                CouponDTO couponDTO = new CouponDTO()
-                {
-                    CouponID = obj.CouponID,
-                    CouponCode = obj.CouponCode,
-                    DiscountAmount = obj.DiscountAmount,
-                    MinAmount = obj.MinAmount
-                };  
-                _response.Result = couponDTO;
+                _response.Result= _mapper.Map<CouponDTO>(obj);
+                
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return _response;
+        }
+
+        [HttpGet]
+        [Route("GetByCode/{id:int}")]
+        public ResponseDTO GetByCode(string code)
+        {
+            try
+            {
+                Coupon obj = _db.Coupons.FirstOrDefault(u => u.CouponCode.ToLower() == code.ToLower());
+                _response.Result = _mapper.Map<CouponDTO>(obj);
+
             }
             catch (Exception ex)
             {
