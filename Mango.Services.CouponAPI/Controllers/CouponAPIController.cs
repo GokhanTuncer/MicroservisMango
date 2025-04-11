@@ -81,7 +81,7 @@ namespace Mango.Services.CouponAPI.Controllers
         {
             try
             {
-                Coupon obj= _mapper.Map<Coupon>(couponDTO);
+                Coupon obj = _mapper.Map<Coupon>(couponDTO);
                 _db.Coupons.Add(obj);
                 _db.SaveChanges();
 

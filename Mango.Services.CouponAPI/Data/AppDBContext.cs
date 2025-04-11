@@ -12,6 +12,8 @@ namespace Mango.Services.CouponAPI.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Coupon>().HasData(new Coupon
             {
                 CouponID = 1,
