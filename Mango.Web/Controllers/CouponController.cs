@@ -23,7 +23,11 @@ namespace Mango.Web.Controllers
             {
                 list = JsonConvert.DeserializeObject<List<CouponDTO>>(Convert.ToString(response.Result));
             }
-            return View(list);
+            else
+            {
+                TempData["error"] = response?.Message;
+            }
+                return View(list);
         }
 
         public async Task<IActionResult> CouponCreate()
@@ -39,7 +43,12 @@ namespace Mango.Web.Controllers
 
                 if (response != null && response.IsSuccess)
                 {
-                  return RedirectToAction(nameof(CouponIndex));
+                    TempData["success"] = "Coupon created successfully!";
+                    return RedirectToAction(nameof(CouponIndex));
+                }
+                else
+                {
+                    TempData["error"] = response?.Message;
                 }
             }
             return View(model);
@@ -62,7 +71,42 @@ namespace Mango.Web.Controllers
 
             if (response != null && response.IsSuccess)
             {
+                TempData["success"] = "Coupon deleted successfully!";
                 return RedirectToAction(nameof(CouponIndex));
+            }
+            else
+            {
+                TempData["error"] = response?.Message;
+            }
+            return View(couponDTO);
+        }
+        public async Task<IActionResult> CouponUpdate(int couponId)
+        {
+            ResponseDTO? response = await _couponService.GetCouponByIdAsync(couponId);
+
+            if (response != null && response.IsSuccess)
+            {
+                CouponDTO? model = JsonConvert.DeserializeObject<CouponDTO>(Convert.ToString(response.Result));
+                return View(model);
+            }
+            return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> CouponUpdate(CouponDTO couponDTO)
+        {
+            if (ModelState.IsValid)
+            {
+                ResponseDTO? response = await _couponService.UpdateCouponsAsync(couponDTO);
+
+                if (response != null && response.IsSuccess)
+                {
+                    TempData["success"] = "Coupon updated successfully!";
+                    return RedirectToAction(nameof(CouponIndex));
+                }
+                else
+                {
+                    TempData["error"] = response?.Message;
+                }
             }
             return View(couponDTO);
         }

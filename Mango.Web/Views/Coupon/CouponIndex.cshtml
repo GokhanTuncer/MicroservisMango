@@ -30,6 +30,7 @@
 						Minimum Amount
 					</th>
 					<th></th>
+					<th></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -48,6 +49,11 @@
 						<td>
 							<a asp-action="CouponDelete" asp-route-couponId="@item.CouponID" class="btn btn-danger">
 								<i class="bi bi-trash"></i>
+							</a>
+						</td>
+						<td>
+							<a asp-action="CouponUpdate" asp-route-couponId="@item.CouponID" class="btn btn-success">
+								<i class="bi bi-pencil"></i>
 							</a>
 						</td>
 					</tr>
