@@ -37,6 +37,7 @@ namespace Mango.Services.AuthAPI.Service
 
             //If user was found, generate token
             var token = _jwtTokenGenerator.GenerateToken(user);
+            
 
             UserDTO userDTO = new()
             {
