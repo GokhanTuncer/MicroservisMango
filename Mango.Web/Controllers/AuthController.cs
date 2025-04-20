@@ -99,9 +99,11 @@ namespace Mango.Web.Controllers
             ViewBag.RoleList = roleList;
             return View(obj);
         }
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            return View();
+            await HttpContext.SignOutAsync();
+            _tokenProvider.ClearToken();
+            return RedirectToAction("Index","Home");
         }
 
         private async Task SignInUser(LoginResponseDTO model)
