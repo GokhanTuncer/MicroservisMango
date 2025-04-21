@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Mango.Web.Controllers
 {
-    
+
     public class AuthController : Controller
     {
         private readonly IAuthService _authService;
@@ -35,11 +35,11 @@ namespace Mango.Web.Controllers
         public async Task<IActionResult> Login(LoginRequestDTO obj)
         {
             ResponseDTO responseDTO = await _authService.LoginAsync(obj);
-           
+
 
             if (responseDTO != null && responseDTO.IsSuccess)
             {
-               LoginResponseDTO loginResponseDTO = JsonConvert.DeserializeObject<LoginResponseDTO>(Convert.ToString(responseDTO.Result));
+                LoginResponseDTO loginResponseDTO = JsonConvert.DeserializeObject<LoginResponseDTO>(Convert.ToString(responseDTO.Result));
 
                 await SignInUser(loginResponseDTO);
                 _tokenProvider.SetToken(loginResponseDTO.Token);
@@ -103,7 +103,7 @@ namespace Mango.Web.Controllers
         {
             await HttpContext.SignOutAsync();
             _tokenProvider.ClearToken();
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index", "Home");
         }
 
         private async Task SignInUser(LoginResponseDTO model)
@@ -111,7 +111,7 @@ namespace Mango.Web.Controllers
             var handler = new JwtSecurityTokenHandler();
             var jwt = handler.ReadJwtToken(model.Token);
             var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Email,jwt.Claims.FirstOrDefault(u=>u.Type== JwtRegisteredClaimNames.Email).Value));
+            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Email, jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Email).Value));
             identity.AddClaim(new Claim(JwtRegisteredClaimNames.Sub, jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Sub).Value));
             identity.AddClaim(new Claim(JwtRegisteredClaimNames.Name, jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Name).Value));
 
@@ -120,7 +120,6 @@ namespace Mango.Web.Controllers
 
             var principal = new ClaimsPrincipal(identity);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-            }
         }
     }
 }
