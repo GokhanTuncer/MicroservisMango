@@ -24,7 +24,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(option=>
+builder.Services.AddSwaggerGen(option =>
 {
     option.AddSecurityDefinition(name: "Bearer", securityScheme: new OpenApiSecurityScheme
     {
@@ -46,13 +46,15 @@ builder.Services.AddSwaggerGen(option=>
                 }
             },
             new string[] {}
-        });
+        }
+    });
 });
 
+var settingsSection = builder.Configuration.GetSection("ApiSettings");
 
-var secret = builder.Configuration.GetValue<string>("ApiSettings:Secret");
-var issuer = builder.Configuration.GetValue<string>("ApiSettings:Issuer");
-var audience = builder.Configuration.GetValue<string>("ApiSettings:Audience");
+var secret = settingsSection.GetValue<string>("ApiSettings:Secret");
+var issuer = settingsSection.GetValue<string>("ApiSettings:Issuer");
+var audience = settingsSection.GetValue<string>("ApiSettings:Audience");
 
 var key = Encoding.ASCII.GetBytes(secret);
 
