@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Mango.Services.ProductAPI.Controllers
 {
-    [Route("api/coupon")]
+    [Route("api/product")]
     [ApiController]
     [Authorize]
     public class ProductAPIController : ControllerBase
@@ -56,39 +56,17 @@ namespace Mango.Services.ProductAPI.Controllers
             return _response;
         }
 
-        [HttpGet]
-        [Route("GetByCode/{id:int}")]
-        public ResponseDTO GetByCode(string code)
-        {
-            try
-            {
-                Product obj = _db.Products.First(u => u.CouponCode.ToLower() == code.ToLower());
-                if (obj==null)
-                {
-                    _response.IsSuccess = false;
-                }
-                _response.Result = _mapper.Map<ProductDTO>(obj);
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
-            }
-            return _response;
-        }
-
         [HttpPost]
         [Authorize(Roles = "ADMIN")]
-        public ResponseDTO Post([FromBody] CouponDTO couponDTO)
+        public ResponseDTO Post([FromBody] ProductDTO couponDTO)
         {
             try
             {
-                Coupon obj = _mapper.Map<Coupon>(couponDTO);
-                _db.Coupons.Add(obj);
+                Product obj = _mapper.Map<Product>(couponDTO);
+                _db.Products.Add(obj);
                 _db.SaveChanges();
 
-                _response.Result = _mapper.Map<CouponDTO>(obj);
+                _response.Result = _mapper.Map<ProductDTO>(obj);
 
             }
             catch (Exception ex)
@@ -101,15 +79,15 @@ namespace Mango.Services.ProductAPI.Controllers
 
         [HttpPut]
         [Authorize(Roles = "ADMIN")]
-        public ResponseDTO Put([FromBody] CouponDTO couponDTO)
+        public ResponseDTO Put([FromBody] ProductDTO couponDTO)
         {
             try
             {
-                Coupon obj = _mapper.Map<Coupon>(couponDTO);
-                _db.Coupons.Update(obj);
+                Product obj = _mapper.Map<Product>(couponDTO);
+                _db.Products.Update(obj);
                 _db.SaveChanges();
 
-                _response.Result = _mapper.Map<CouponDTO>(obj);
+                _response.Result = _mapper.Map<ProductDTO>(obj);
 
             }
             catch (Exception ex)
@@ -127,11 +105,11 @@ namespace Mango.Services.ProductAPI.Controllers
         {
             try
             {
-                Coupon obj = _db.Coupons.First(u => u.CouponID == id);
-                _db.Coupons.Remove(obj);
+                Product obj = _db.Products.First(u => u.ProductID == id);
+                _db.Products.Remove(obj);
                 _db.SaveChanges();
 
-                _response.Result = _mapper.Map<CouponDTO>(obj);
+                _response.Result = _mapper.Map<ProductDTO>(obj);
 
             }
             catch (Exception ex)
