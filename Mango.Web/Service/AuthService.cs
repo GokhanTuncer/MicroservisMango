@@ -7,6 +7,7 @@ namespace Mango.Web.Service
     public class AuthService : IAuthService
     {
         private readonly IBaseService _baseService;
+
         public AuthService(IBaseService baseService)
         {
             _baseService = baseService;
@@ -19,7 +20,7 @@ namespace Mango.Web.Service
                 ApiType = SD.ApiType.POST,
                 Data = registrationRequestDTO,
                 Url = SD.AuthAPIBase + "/api/auth/AssignRole"
-            });
+            }, withBearer:false);
         }
 
         public async Task<ResponseDTO?> LoginAsync(LoginRequestDTO loginRequestDTO)
@@ -29,7 +30,7 @@ namespace Mango.Web.Service
                 ApiType = SD.ApiType.POST,
                 Data = loginRequestDTO,
                 Url = SD.AuthAPIBase + "/api/auth/login"
-            });
+            },withBearer: false);
         }
 
         public async Task<ResponseDTO?> RegisterAsync(RegistrationRequestDTO registrationRequestDTO)
@@ -39,7 +40,7 @@ namespace Mango.Web.Service
                 ApiType = SD.ApiType.POST,
                 Data = registrationRequestDTO,
                 Url = SD.AuthAPIBase + "/api/auth/register"
-            });
+            }, withBearer: false);
         }
     }
 }
