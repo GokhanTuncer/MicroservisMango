@@ -9,7 +9,7 @@ namespace Mango.Services.ProductAPI.Controllers
 {
     [Route("api/product")]
     [ApiController]
-    [Authorize]
+    
     public class ProductAPIController : ControllerBase
     {
         private readonly AppDBContext _db;
@@ -28,7 +28,6 @@ namespace Mango.Services.ProductAPI.Controllers
             {
                 IEnumerable<Product> objList = _db.Products.ToList();
                 _response.Result = _mapper.Map<IEnumerable<ProductDTO>>(objList);
-               
             }
             catch (Exception ex)
             {
