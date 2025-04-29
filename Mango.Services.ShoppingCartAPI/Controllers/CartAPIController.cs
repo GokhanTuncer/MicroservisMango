@@ -27,7 +27,7 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
         {
             try
             {
-                var cartHeaderFromDb = await _db.CartHeaders.FirstOrDefaultAsync(u => u.UserID == cartDTO.CartHeader.UserID);
+                var cartHeaderFromDb = await _db.CartHeaders.AsNoTracking().FirstOrDefaultAsync(u => u.UserID == cartDTO.CartHeader.UserID);
                 if (cartHeaderFromDb == null)
                 {
                     //Sepet başlığı yoksa yeniden oluştur
@@ -69,6 +69,34 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
             {
                 _response.IsSuccess = false;
                 _response.Message = ex.ToString();  
+            }
+            return _response;
+        }
+
+        [HttpPost("RemoveCart")]
+        public async Task<ResponseDTO> RemoveCart([FromBody] int cartDetailsID)
+        {
+            try
+            {
+                CartDetails cartDetails = _db.CartDetails.First(u => u.CartDetailsID == cartDetailsID);
+
+                int totalCountofCartItem = _db.CartDetails.Where(u => u.CartHeaderID == cartDetails.CartHeaderID).Count();
+
+                _db.CartDetails.Remove(cartDetails);
+
+                if (totalCountofCartItem == 1)
+                {
+                    var cartHeaderToRemove = await _db.CartHeaders.FirstOrDefaultAsync(u => u.CartHeaderID == cartDetails.CartHeaderID);
+
+                    _db.CartHeaders.Remove(cartHeaderToRemove);
+                }
+                await _db.SaveChangesAsync(); 
+                _response.Result = true;
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.ToString();
             }
             return _response;
         }
