@@ -42,7 +42,9 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
                 {
                     //Sepet başlığı varsa güncelle
                     //Sepette aynı ürün var mı onu kontrol et
-                    var cartDetailsFromDb = await _db.CartDetails.FirstOrDefaultAsync(u => u.ProductID == cartDTO.CartDetails.First().ProductID && u.CartHeaderID == cartHeaderFromDb.CartHeaderID);
+                    var cartDetailsFromDb = await _db.CartDetails.AsNoTracking().FirstOrDefaultAsync(
+                    u => u.ProductID == cartDTO.CartDetails.First().ProductID &&
+                    u.CartHeaderID == cartHeaderFromDb.CartHeaderID);
 
                     if (cartDetailsFromDb == null)
                     {
@@ -55,8 +57,8 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
                     {
                         //Ürün sayısını güncelle
                         cartDTO.CartDetails.First().Count += cartDetailsFromDb.Count;
-                        cartDTO.CartDetails.First().CartHeaderID += cartDetailsFromDb.CartHeaderID;
-                        cartDTO.CartDetails.First().CartDetailsID += cartDetailsFromDb.CartDetailsID;
+                        cartDTO.CartDetails.First().CartHeaderID = cartDetailsFromDb.CartHeaderID;
+                        cartDTO.CartDetails.First().CartDetailsID = cartDetailsFromDb.CartDetailsID;
                         _db.CartDetails.Update(_mapper.Map<CartDetails>(cartDTO.CartDetails.First()));
                         await _db.SaveChangesAsync();
                     }
